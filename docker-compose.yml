@@ -79,9 +79,13 @@ services:
       DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD:?Set STRAPI_DB_PASSWORD in .env}
       DATABASE_SSL: "false"
     volumes:
-      - ./strapi:/srv/app
+      - ./strapi/config:/srv/app/config:ro
+      - ./strapi/src:/srv/app/src:ro
       - strapi_node_modules:/srv/app/node_modules
       - strapi_build:/srv/app/.strapi
+      - strapi_cache:/srv/app/.cache
+      - strapi_tmp:/srv/app/.tmp
+      - strapi_public:/srv/app/public
 
 volumes:
   wordpress_db_data:
@@ -89,4 +93,7 @@ volumes:
   strapi_db_data:
   strapi_node_modules:
   strapi_build:
+  strapi_cache:
+  strapi_tmp:
+  strapi_public:
 

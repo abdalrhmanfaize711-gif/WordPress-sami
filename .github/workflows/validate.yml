@@ -58,3 +58,23 @@ jobs:
       - name: Build the Strapi admin panel
         run: npm run build
 
+  container-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the complete local stack
+        run: |
+          cp .env.example .env
+          docker compose up -d --build
+      - name: Wait for WordPress and Strapi, then check the plugin file
+        run: |
+          curl --fail --location --retry 48 --retry-all-errors --retry-delay 5 --retry-max-time 240 http://localhost:8080/ -o /dev/null
+          curl --fail --location --retry 48 --retry-all-errors --retry-delay 5 --retry-max-time 240 http://localhost:1337/admin -o /dev/null
+          docker compose exec -T wordpress php -l /var/www/html/wp-content/plugins/yemen-travel-site/yemen-travel-site.php
+      - name: Show container logs after failure
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Stop the test stack
+        if: always()
+        run: docker compose down -v
+
