@@ -10,10 +10,9 @@ COPY package.json ./
 RUN npm install --include=dev
 
 COPY . .
-RUN mkdir -p /srv/app/public/uploads \
+RUN mkdir -p /srv/app/public/uploads /srv/app/.strapi /srv/app/.cache /srv/app/.tmp \
     && chown -R node:node /srv/app
 USER node
 
 EXPOSE 1337
 CMD ["npm", "run", "develop"]
-
