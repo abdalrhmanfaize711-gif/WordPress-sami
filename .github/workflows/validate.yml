@@ -1,0 +1,60 @@
+name: Validate project
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+      - name: Check PHP syntax
+        run: php -l wordpress/wp-content/plugins/yemen-travel-site/yemen-travel-site.php
+      - name: Check JavaScript syntax
+        run: node --check wordpress/wp-content/plugins/yemen-travel-site/assets/site.js
+      - name: Validate project structure and content
+        run: node scripts/validate-project.mjs
+      - name: Validate Docker Compose configuration
+        run: |
+          cp .env.example .env
+          docker compose config -q
+
+  strapi-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: strapi
+    env:
+      NODE_ENV: production
+      APP_KEYS: ci-app-key-one,ci-app-key-two
+      API_TOKEN_SALT: ci-api-token-salt-12345678901234567890
+      ADMIN_JWT_SECRET: ci-admin-jwt-secret-12345678901234567890
+      TRANSFER_TOKEN_SALT: ci-transfer-token-salt-12345678901234567890
+      JWT_SECRET: ci-jwt-secret-12345678901234567890
+      ENCRYPTION_KEY: ci-encryption-key-1234567890123456
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: 127.0.0.1
+      DATABASE_PORT: 5432
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PASSWORD: strapi
+      DATABASE_SSL: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Strapi dependencies
+        run: npm install --package-lock=false
+      - name: Build the Strapi admin panel
+        run: npm run build
+

@@ -1,0 +1,10 @@
+.env
+strapi/node_modules/
+strapi/.cache/
+strapi/.tmp/
+strapi/build/
+strapi/dist/
+strapi/.strapi/
+wordpress/wp-content/uploads/
+*.log
+

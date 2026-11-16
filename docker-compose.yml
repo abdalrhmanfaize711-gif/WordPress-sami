@@ -1,0 +1,92 @@
+services:
+  wordpress-db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${WORDPRESS_DB_NAME:-wordpress}
+      MYSQL_USER: ${WORDPRESS_DB_USER:-wordpress}
+      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD:?Set WORDPRESS_DB_PASSWORD in .env}
+      MYSQL_ROOT_PASSWORD: ${WORDPRESS_DB_ROOT_PASSWORD:?Set WORDPRESS_DB_ROOT_PASSWORD in .env}
+    volumes:
+      - wordpress_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      wordpress-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${WORDPRESS_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME:-wordpress}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:?Set WORDPRESS_DB_PASSWORD in .env}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_ENVIRONMENT_TYPE', 'local');
+        define('YTS_ALLOW_DOCKER_STRAPI', true);
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wordpress/wp-content/plugins/yemen-travel-site:/var/www/html/wp-content/plugins/yemen-travel-site:ro
+
+  strapi-db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${STRAPI_DB_NAME:-strapi}
+      POSTGRES_USER: ${STRAPI_DB_USER:-strapi}
+      POSTGRES_PASSWORD: ${STRAPI_DB_PASSWORD:?Set STRAPI_DB_PASSWORD in .env}
+    volumes:
+      - strapi_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${STRAPI_DB_USER:-strapi} -d ${STRAPI_DB_NAME:-strapi}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  strapi:
+    build:
+      context: ./strapi
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      strapi-db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${STRAPI_PORT:-1337}:1337"
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 1337
+      PUBLIC_STRAPI_URL: ${PUBLIC_STRAPI_URL:-http://localhost:1337}
+      APP_KEYS: ${STRAPI_APP_KEYS:?Set STRAPI_APP_KEYS in .env}
+      API_TOKEN_SALT: ${STRAPI_API_TOKEN_SALT:?Set STRAPI_API_TOKEN_SALT in .env}
+      ADMIN_JWT_SECRET: ${STRAPI_ADMIN_JWT_SECRET:?Set STRAPI_ADMIN_JWT_SECRET in .env}
+      TRANSFER_TOKEN_SALT: ${STRAPI_TRANSFER_TOKEN_SALT:?Set STRAPI_TRANSFER_TOKEN_SALT in .env}
+      JWT_SECRET: ${STRAPI_JWT_SECRET:?Set STRAPI_JWT_SECRET in .env}
+      ENCRYPTION_KEY: ${STRAPI_ENCRYPTION_KEY:?Set STRAPI_ENCRYPTION_KEY in .env}
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: strapi-db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${STRAPI_DB_NAME:-strapi}
+      DATABASE_USERNAME: ${STRAPI_DB_USER:-strapi}
+      DATABASE_PASSWORD: ${STRAPI_DB_PASSWORD:?Set STRAPI_DB_PASSWORD in .env}
+      DATABASE_SSL: "false"
+    volumes:
+      - ./strapi:/srv/app
+      - strapi_node_modules:/srv/app/node_modules
+      - strapi_build:/srv/app/.strapi
+
+volumes:
+  wordpress_db_data:
+  wordpress_data:
+  strapi_db_data:
+  strapi_node_modules:
+  strapi_build:
+

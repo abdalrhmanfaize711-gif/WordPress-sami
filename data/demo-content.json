@@ -1,0 +1,74 @@
+{
+  "siteSetting": {
+    "siteName": "رِحلات اليمن",
+    "tagline": "جزر نادرة، ومدن عتيقة، وضيافة تترك أثرًا.",
+    "heroTitle": "اليمن… حكاية من بحرٍ وجبلٍ وتاريخ",
+    "heroText": "اكتشف تنوع اليمن من أرخبيل سقطرى إلى أزقة صنعاء القديمة وعمارة شبام الحضرمية.",
+    "heroImageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Dragon_blood_trees_in_Socotra_Island,_Yemen.jpg?width=1800",
+    "heroImageCredit": "Valerian Guillot — CC BY 2.0",
+    "heroImageSourceUrl": "https://commons.wikimedia.org/wiki/File:Dragon_blood_trees_in_Socotra_Island,_Yemen.jpg",
+    "heroImageLicenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+    "contactPhone": "",
+    "contactWhatsApp": "",
+    "contactEmail": ""
+  },
+  "destinations": [
+    {
+      "name": "سقطرى",
+      "slug": "socotra",
+      "region": "بحر العرب",
+      "summary": "أرخبيل طبيعي فريد بتنوعه الحيوي وتضاريسه الساحلية والجبلية.",
+      "description": "أُدرج أرخبيل سقطرى على قائمة التراث العالمي الطبيعي لليونسكو. أضف هنا معلومات محلية موثقة عن الجزر والأنشطة الموسمية وشروط الزيارة.",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Socotra_Island,_Yemen.jpg?width=1000",
+      "imageCredit": "Rod Waddington — CC BY-SA 4.0",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Socotra_Island,_Yemen.jpg",
+      "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "heritageUrl": "https://whc.unesco.org/en/list/1263/",
+      "sortOrder": 1,
+      "featured": true
+    },
+    {
+      "name": "صنعاء القديمة",
+      "slug": "old-sanaa",
+      "region": "المرتفعات الغربية",
+      "summary": "مدينة تاريخية تشتهر ببيوتها البرجية وزخارفها العمرانية المميزة.",
+      "description": "أُدرجت صنعاء القديمة على قائمة التراث العالمي. أضف وصفًا محليًا موثقًا للأحياء والأسواق والمعالم، مع تحديث أي معلومات تتعلق بإمكانية الزيارة.",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Old_Sana'a_City_-_Yemen.jpg?width=1000",
+      "imageCredit": "Ibrahim Alqousi — CC BY-SA 4.0",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Old_Sana'a_City_-_Yemen.jpg",
+      "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "heritageUrl": "https://whc.unesco.org/en/list/385/",
+      "sortOrder": 2,
+      "featured": false
+    },
+    {
+      "name": "شبام حضرموت",
+      "slug": "shibam-hadramout",
+      "region": "وادي حضرموت",
+      "summary": "مدينة وادي محاطة بسور، وواحدة من أقدم نماذج البناء العمودي.",
+      "description": "تصف اليونسكو شبام بأنها مثال بارز للتخطيط الحضري متعدد الطوابق. أضف تفاصيل الزيارة المحلية والمواقع المفتوحة بعد التحقق من مصادرها.",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Old_Walled_City_of_Shibam-109039.jpg?width=1000",
+      "imageCredit": "Maria Gropa / UNESCO — CC BY-SA 3.0 IGO",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Old_Walled_City_of_Shibam-109039.jpg",
+      "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/igo/",
+      "heritageUrl": "https://whc.unesco.org/en/list/192/",
+      "sortOrder": 3,
+      "featured": false
+    },
+    {
+      "name": "عدن",
+      "slug": "aden",
+      "region": "الساحل الجنوبي",
+      "summary": "مدينة ساحلية ذات ميناء تاريخي وإطلالات على خليج عدن.",
+      "description": "استخدم هذه البطاقة للتعريف بالمواقع الساحلية والتاريخية في عدن. تحقّق من مصادر المعلومات وإرشادات السفر الحالية قبل نشر تفاصيل الرحلة.",
+      "imageUrl": "https://commons.wikimedia.org/wiki/Special:FilePath/Aden,_Yemen_Port.jpg?width=1000",
+      "imageCredit": "T3n60 — CC BY-SA 3.0",
+      "imageSourceUrl": "https://commons.wikimedia.org/wiki/File:Aden,_Yemen_Port.jpg",
+      "imageLicenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "heritageUrl": "https://whc.unesco.org/en/statesparties/ye/",
+      "sortOrder": 4,
+      "featured": false
+    }
+  ]
+}
+

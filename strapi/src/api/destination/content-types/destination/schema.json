@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "destinations",
+  "info": {
+    "singularName": "destination",
+    "pluralName": "destinations",
+    "displayName": "الوجهات السياحية",
+    "description": "أماكن يمنية ومعلوماتها السياحية ومصادر الصور"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "slug": { "type": "uid", "targetField": "name", "required": true },
+    "region": { "type": "string" },
+    "summary": { "type": "text" },
+    "description": { "type": "text" },
+    "imageUrl": { "type": "string" },
+    "imageCredit": { "type": "string" },
+    "imageSourceUrl": { "type": "string" },
+    "imageLicenseUrl": { "type": "string" },
+    "heritageUrl": { "type": "string" },
+    "sortOrder": { "type": "integer", "default": 0 },
+    "featured": { "type": "boolean", "default": false }
+  }
+}
+
