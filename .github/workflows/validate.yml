@@ -68,8 +68,8 @@ jobs:
           docker compose up -d --build
       - name: Wait for WordPress and Strapi, then check the plugin file
         run: |
-          curl --fail --location --retry 48 --retry-all-errors --retry-delay 5 --retry-max-time 240 http://localhost:8080/ -o /dev/null
-          curl --fail --location --retry 48 --retry-all-errors --retry-delay 5 --retry-max-time 240 http://localhost:1337/admin -o /dev/null
+          curl --fail --location --retry 30 --retry-all-errors --retry-delay 3 --retry-max-time 120 http://localhost:8080/ -o /dev/null
+          curl --fail --location --retry 30 --retry-all-errors --retry-delay 3 --retry-max-time 120 http://localhost:1337/admin -o /dev/null
           docker compose exec -T wordpress php -l /var/www/html/wp-content/plugins/yemen-travel-site/yemen-travel-site.php
       - name: Show container logs after failure
         if: failure()

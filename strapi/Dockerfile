@@ -10,7 +10,8 @@ COPY package.json ./
 RUN npm install --include=dev
 
 COPY . .
-RUN chown -R node:node /srv/app
+RUN mkdir -p /srv/app/public/uploads \
+    && chown -R node:node /srv/app
 USER node
 
 EXPOSE 1337
