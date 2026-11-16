@@ -1,41 +1,51 @@
-# رِحلات اليمن — WordPress + Strapi
+# رِحلات اليمن — WordPress + Strapi على Laragon
 
-موقع سياحي عربي باتجاه RTL. واجهة WordPress مكتوبة كإضافة PHP مستقلة، والمحتوى يُدار من Strapi 5. يأتي المشروع بإعداد محلي عبر Docker Compose وبيانات تجريبية وصور Wikimedia Commons مع نسب أصحابها وتراخيصها.
+موقع سياحي عربي باتجاه RTL. واجهة WordPress موجودة في إضافة PHP، ومحتوى الوجهات يُدار من Strapi 5. لا تحتاج إلى كتابة PHP. المسار المقترح للتشغيل المحلي هو Laragon على Windows؛ يوجد أيضًا إعداد Docker اختياري.
 
-## ما الذي يأتي في المشروع؟
+## تشغيله على Laragon
 
-- `wordpress/wp-content/plugins/yemen-travel-site/` — الإضافة والواجهة العربية المتجاوبة.
-- `strapi/` — تطبيق Strapi 5 ومخططات أنواع المحتوى.
-- `docker-compose.yml` — WordPress وMySQL وStrapi وPostgreSQL للتطوير المحلي.
-- `data/demo-content.json` — محتوى أولي قابل للإدخال في لوحة Strapi.
-- `docs/SETUP-AR.md` — دليل تشغيل وإعداد خطوة بخطوة.
-- `docs/IMAGE-CREDITS.md` — مصادر الصور والتراخيص ومصادر معلومات التراث.
-- `scripts/package-plugin.ps1` — بناء ZIP قابل للرفع من لوحة WordPress.
-- `scripts/validate-project.mjs` — فحوص بنية المشروع وبياناته.
+### المتطلبات
 
-## تشغيل سريع على Windows
+- Laragon مثبت في `C:\laragon` ويحتوي Apache وMySQL 8.4 وPHP 8.3 أو أحدث.
+- Node.js بإصدار LTS 22 أو 24 مع npm.
+- اتصال إنترنت لتنزيل WordPress للمرة الأولى والصور الخارجية.
 
-1. ثبّت Docker Desktop وشغّله.
-2. افتح PowerShell في مجلد المشروع.
-3. أنشئ ملف إعداد محلي: `Copy-Item .env.example .env`.
-4. ابدأ الخدمات: `docker compose up -d --build`.
-5. افتح WordPress على `http://localhost:8080` وStrapi على `http://localhost:1337/admin`.
-6. أكمل مع [دليل الإعداد العربي](docs/SETUP-AR.md) لإدخال بيانات الوجهات وربط الإضافة.
+### خطوات الإعداد
 
-## بناء إضافة WordPress ZIP
+1. افتح Laragon واضغط **Start All**، وتأكد من تشغيل Apache وMySQL.
+2. افتح PowerShell في مجلد المستودع. من سطح المكتب مثلًا:
+
+   ```powershell
+   cd "$env:USERPROFILE\Desktop\sam\WordPress-sami"
+   powershell -ExecutionPolicy Bypass -File .\scripts\install-laragon.ps1
+   ```
+
+3. أدخل كلمة مرور MySQL root عند السؤال؛ اتركها فارغة واضغط Enter إن لم تكن قد غيّرتها في Laragon. سيُنزّل الإعداد WordPress إلى `C:\laragon\www\yemen-travel`، وينشئ قاعدتي البيانات، وينسخ الإضافة ويجهز إعداد Strapi المحلي.
+4. افتح [http://localhost/yemen-travel](http://localhost/yemen-travel)، واختر العربية وأنشئ حساب مدير WordPress.
+5. في PowerShell ثانٍ، شغّل Strapi:
+
+   ```powershell
+   cd "$env:USERPROFILE\Desktop\sam\WordPress-sami"
+   powershell -ExecutionPolicy Bypass -File .\scripts\start-laragon-strapi.ps1
+   ```
+
+6. افتح [لوحة Strapi](http://127.0.0.1:1337/admin)، وأنشئ حساب مدير. في **Settings → API Tokens** أنشئ رمزًا بصلاحية **Read-only** واحتفظ به.
+7. من WordPress فعّل إضافة **Yemen Travel — Yemen Tourism**. افتح **الإعدادات ← Yemen Travel**، واكتب عنوان Strapi `http://127.0.0.1:1337` ورمز القراءة، ثم احفظ.
+8. أدخل وانشر إعداد الموقع والوجهات في Strapi. استخدم [البيانات التجريبية](data/demo-content.json) مرجعًا، واترك اعتماد كل صورة ومصدرها ورخصتها.
+9. أنشئ صفحة «الرئيسية» في WordPress وأضف كتلة **Shortcode** فيها `[yemen_travel_home]`، ثم اجعلها صفحة البداية من **الإعدادات ← القراءة**. للصفحة المنفصلة استخدم `[yemen_destinations]`.
+
+أوقف Strapi بـ `Ctrl+C`. لإيقاف Apache وMySQL استخدم **Stop All** في Laragon؛ بيانات الموقع وقواعد البيانات تبقى محفوظة.
+
+دليل الإعداد المفصل وحل المشكلات: [docs/SETUP-AR.md](docs/SETUP-AR.md). مصادر الصور والتراخيص: [docs/IMAGE-CREDITS.md](docs/IMAGE-CREDITS.md).
+
+## Docker (بديل)
+
+ملف `docker-compose.yml` ما زال متاحًا للتشغيل عبر Docker Compose. راجع دليل الإعداد لخطواته. لا تحتاج إلى Docker إذا كنت تستخدم Laragon.
+
+## بناء ملف إضافة WordPress ZIP
 
 ```powershell
-./scripts/package-plugin.ps1
+.\scripts\package-plugin.ps1
 ```
 
-ينشئ `dist/yemen-travel-site.zip` مع مجلد الإضافة في جذر الأرشيف ويتحقق من الملفات الأساسية.
-
-## فحوص محلية
-
-```powershell
-node ./scripts/validate-project.mjs
-docker compose config
-```
-
-فحوص PHP ودمج WordPress وStrapi كاملة تتطلب تشغيل Docker Desktop. إرشادات النشر العام وتأمين كلمات المرور والشهادات الاحتياطية موضحة في الدليل.
-
+ينشئ `dist/yemen-travel-site.zip`.

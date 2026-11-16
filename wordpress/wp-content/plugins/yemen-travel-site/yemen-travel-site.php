@@ -106,20 +106,17 @@ final class Yemen_Travel_Site {
             $args['headers']['Authorization'] = 'Bearer ' . $settings['api_token'];
         }
         $url_parts = wp_parse_url($url);
-        $allow_local_strapi = defined('YTS_ALLOW_DOCKER_STRAPI') && YTS_ALLOW_DOCKER_STRAPI
-            && strtolower($url_parts['host'] ?? '') === 'strapi'
-            && (int) ($url_parts['port'] ?? 0) === 1337
-            && ($url_parts['scheme'] ?? '') === 'http';
+        $allow_local_strapi = $this->is_local_strapi_target($url_parts, $url);
         if ($allow_local_strapi) {
-            add_filter('http_request_host_is_external', [$this, 'allow_docker_strapi_host'], 10, 3);
-            add_filter('http_allowed_safe_ports', [$this, 'allow_docker_strapi_port'], 10, 3);
+            add_filter('http_request_host_is_external', [$this, 'allow_local_strapi_host'], 10, 3);
+            add_filter('http_allowed_safe_ports', [$this, 'allow_local_strapi_port'], 10, 3);
         }
         try {
             $response = wp_safe_remote_get($url, $args);
         } finally {
             if ($allow_local_strapi) {
-                remove_filter('http_request_host_is_external', [$this, 'allow_docker_strapi_host'], 10);
-                remove_filter('http_allowed_safe_ports', [$this, 'allow_docker_strapi_port'], 10);
+                remove_filter('http_request_host_is_external', [$this, 'allow_local_strapi_host'], 10);
+                remove_filter('http_allowed_safe_ports', [$this, 'allow_local_strapi_port'], 10);
             }
         }
         if (is_wp_error($response)) {
@@ -139,16 +136,23 @@ final class Yemen_Travel_Site {
         return $body['data'];
     }
 
-    public function allow_docker_strapi_host($external, $host, $url) {
-        return $external || (defined('YTS_ALLOW_DOCKER_STRAPI') && YTS_ALLOW_DOCKER_STRAPI && strtolower($host) === 'strapi');
+    private function is_local_strapi_target($parts, $url) {
+        if (!is_array($parts) || ($parts['scheme'] ?? '') !== 'http' || (int) ($parts['port'] ?? 0) !== 1337) {
+            return false;
+        }
+        $host = strtolower($parts['host'] ?? '');
+        $is_docker = defined('YTS_ALLOW_DOCKER_STRAPI') && YTS_ALLOW_DOCKER_STRAPI && $host === 'strapi';
+        $is_laragon = defined('YTS_ALLOW_LARAGON_STRAPI') && YTS_ALLOW_LARAGON_STRAPI && in_array($host, ['localhost', '127.0.0.1'], true);
+        return $is_docker || $is_laragon;
     }
 
-    public function allow_docker_strapi_port($ports, $host, $url) {
-        if (defined('YTS_ALLOW_DOCKER_STRAPI') && YTS_ALLOW_DOCKER_STRAPI && strtolower($host) === 'strapi') {
-            $parts = wp_parse_url($url);
-            if ((int) ($parts['port'] ?? 0) === 1337 && ($parts['scheme'] ?? '') === 'http') {
-                $ports[] = 1337;
-            }
+    public function allow_local_strapi_host($external, $host, $url) {
+        return $external || $this->is_local_strapi_target(wp_parse_url($url), $url);
+    }
+
+    public function allow_local_strapi_port($ports, $host, $url) {
+        if ($this->is_local_strapi_target(wp_parse_url($url), $url)) {
+            $ports[] = 1337;
         }
         return array_values(array_unique($ports));
     }

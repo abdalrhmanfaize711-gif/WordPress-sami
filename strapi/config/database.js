@@ -3,7 +3,7 @@ module.exports = ({ env }) => ({
     client: env('DATABASE_CLIENT', 'postgres'),
     connection: {
       host: env('DATABASE_HOST', 'localhost'),
-      port: env.int('DATABASE_PORT', 5432),
+      port: env.int('DATABASE_PORT', env('DATABASE_CLIENT', 'postgres') === 'mysql' ? 3306 : 5432),
       database: env('DATABASE_NAME', 'strapi'),
       user: env('DATABASE_USERNAME', 'strapi'),
       password: env('DATABASE_PASSWORD', ''),

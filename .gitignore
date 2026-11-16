@@ -8,3 +8,5 @@ strapi/.strapi/
 wordpress/wp-content/uploads/
 *.log
 
+strapi/.env
+strapi/.strapi-updater.json
