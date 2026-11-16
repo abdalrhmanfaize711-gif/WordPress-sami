@@ -14,7 +14,8 @@ const compose = await read('docker-compose.yml');
 
 assert.equal(destinationSchema.info.pluralName, 'destinations');
 assert.equal(settingsSchema.kind, 'singleType');
-assert.equal(manifest.dependencies['@strapi/strapi'], '5.50.0');
+assert.equal(manifest.dependencies['@strapi/strapi'], '5.62.0');
+assert.equal(manifest.dependencies['@strapi/upload'], '5.62.0');
 assert.match(php, /add_shortcode\('yemen_travel_home'/);
 assert.match(php, /add_shortcode\('yemen_destinations'/);
 assert.match(php, /site-setting\?populate=\*/);
